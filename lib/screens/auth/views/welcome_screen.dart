@@ -1,118 +1,69 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import 'sign_in_screen.dart';
-import 'sign_up_screen.dart';
+import '../../../app_view.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
-}
-
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with TickerProviderStateMixin {
-  late TabController tabController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    tabController = TabController(
-      initialIndex: 0,
-      length: 2,
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: const AlignmentDirectional(20, -1.2),
-                child: Container(
-                  height: MediaQuery.of(context).size.width,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.brown.shade200,
-                  ),
+              Icon(
+                Icons.local_cafe_rounded,
+                size: 110,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Welcome to Coffee Order',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
                 ),
               ),
-
-              Align(
-                alignment: const AlignmentDirectional(2.7, -1.2),
-                child: Container(
-                  height: MediaQuery.of(context).size.width / 1.3,
-                  width: MediaQuery.of(context).size.width / 1.3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.brown.shade500,
-                  ),
+              const SizedBox(height: 12),
+              Text(
+                'Choose your favorite coffee and order easily.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => const AuthPage(initialTabIndex: 0),
+                      ),
+                    );
+                  },
+                  child: const Text('Sign In'),
                 ),
               ),
-
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
-                child: Container(),
-              ),
-
-              Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height / 1.8,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                        child: TabBar(
-                          controller: tabController,
-                          unselectedLabelColor: Colors.black.withOpacity(0.5),
-                          labelColor: Colors.black,
-                          indicatorColor: Colors.brown,
-                          tabs: const [
-                            Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Text(
-                                'Sign In',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Text(
-                                'Sign Up',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          ],
-                        ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => const AuthPage(initialTabIndex: 1),
                       ),
-
-                      Expanded(
-                        child: TabBarView(
-                          controller: tabController,
-                          children: const [
-                            SignInScreen(),
-                            SignUpScreen(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
+                  child: const Text('Create Account'),
                 ),
               ),
             ],

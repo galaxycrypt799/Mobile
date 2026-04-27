@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'screens/auth/views/welcome_screen.dart';
 import 'screens/auth/views/sign_in_screen.dart';
 import 'screens/auth/views/sign_up_screen.dart';
+import 'screens/profile/views/profile_screen.dart';
 
 class MyAppView extends StatelessWidget {
   const MyAppView({super.key});
@@ -14,18 +16,29 @@ class MyAppView extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.brown,
+          seedColor: const Color(0xFF6F4E37),
           brightness: Brightness.light,
         ),
         scaffoldBackgroundColor: const Color(0xFFF7F1EA),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFF7F1EA),
+          foregroundColor: Colors.black87,
+          elevation: 0,
+          centerTitle: true,
+        ),
       ),
-      home: const AuthPage(),
+      home: const WelcomeScreen(),
     );
   }
 }
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  final int initialTabIndex;
+
+  const AuthPage({
+    super.key,
+    this.initialTabIndex = 0,
+  });
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -34,10 +47,17 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
 
+  String userName = 'Coffee Lover';
+  String userEmail = 'user@gmail.com';
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
   }
 
   @override
@@ -46,9 +66,20 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  void _goToHome() {
+  void _goToHome({
+    required String name,
+    required String email,
+  }) {
+    userName = name;
+    userEmail = email;
+
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const CoffeeHomePage()),
+      MaterialPageRoute(
+        builder: (_) => CoffeeHomePage(
+          userName: userName,
+          userEmail: userEmail,
+        ),
+      ),
     );
   }
 
@@ -114,8 +145,22 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          SignInScreen(onSignInSuccess: _goToHome),
-                          SignUpScreen(onSignUpSuccess: _goToHome),
+                          SignInScreen(
+                            onSignInSuccess: (email) {
+                              _goToHome(
+                                name: 'Coffee Lover',
+                                email: email,
+                              );
+                            },
+                          ),
+                          SignUpScreen(
+                            onSignUpSuccess: (name, email) {
+                              _goToHome(
+                                name: name,
+                                email: email,
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -131,22 +176,52 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
 }
 
 class CoffeeHomePage extends StatelessWidget {
-  const CoffeeHomePage({super.key});
+  final String userName;
+  final String userEmail;
+
+  const CoffeeHomePage({
+    super.key,
+    required this.userName,
+    required this.userEmail,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Coffee Menu'),
-        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            tooltip: 'Profile',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ProfileScreen(
+                    userName: userName,
+                    email: userEmail,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: const [
           _CoffeeItem(name: 'Americano', price: '25.000đ', icon: Icons.coffee),
           _CoffeeItem(name: 'Latte', price: '35.000đ', icon: Icons.local_cafe),
-          _CoffeeItem(name: 'Cappuccino', price: '39.000đ', icon: Icons.coffee_maker),
-          _CoffeeItem(name: 'Milk Coffee', price: '30.000đ', icon: Icons.emoji_food_beverage),
+          _CoffeeItem(
+            name: 'Cappuccino',
+            price: '39.000đ',
+            icon: Icons.coffee_maker,
+          ),
+          _CoffeeItem(
+            name: 'Milk Coffee',
+            price: '30.000đ',
+            icon: Icons.emoji_food_beverage,
+          ),
         ],
       ),
     );
@@ -168,6 +243,7 @@ class _CoffeeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
+      color: const Color(0xFFFFEFE8),
       child: ListTile(
         leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
         title: Text(name),
