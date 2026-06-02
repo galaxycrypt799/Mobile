@@ -1,6 +1,6 @@
-# DrinkHub - Hệ Thống Đặt & Quản Lý Đồ Uống
+# Coffee App - Hệ Thống Đặt & Quản Lý Đồ Uống
 
-Dự án Flutter monorepo cho hệ thống đặt đồ uống **DrinkHub**, gồm 2 ứng dụng:
+Dự án Flutter monorepo cho hệ thống đặt đồ uống **Coffee App**, gồm 2 ứng dụng:
 
 | App | Mục đích | Nền tảng |
 |-----|----------|----------|
